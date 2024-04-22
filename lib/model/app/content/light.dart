@@ -1,6 +1,6 @@
-import 'package:flutter_application_1/model/item.dart';
-import 'package:flutter_application_1/model/setting/level_setting.dart';
-import 'package:flutter_application_1/model/setting/timer_setting.dart';
+import 'package:flutter_application_1/model/app/content/item.dart';
+import 'package:flutter_application_1/model/app/setting/level_setting.dart';
+import 'package:flutter_application_1/model/app/setting/timer_setting.dart';
 
 class Light extends Item {
 
@@ -13,7 +13,6 @@ class Light extends Item {
   Light(
       {required super.iconPath,
       required super.title,
-      required super.subtitle,
       required super.isOnDevice,
       required super.isAuto,
       required this.timerSetting,

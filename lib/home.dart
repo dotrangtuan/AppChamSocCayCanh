@@ -1,15 +1,22 @@
+import 'dart:async';
+import 'dart:ffi';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/utils/stream_subscriber_mixin.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/data_resource/data.dart';
 import 'package:flutter_application_1/itemDashboard.dart';
-import 'package:flutter_application_1/model/item.dart';
-import 'package:flutter_application_1/model/light.dart';
-import 'package:flutter_application_1/model/mist_spray.dart';
-import 'package:flutter_application_1/model/roof.dart';
-import 'package:flutter_application_1/model/setting/level_setting.dart';
-import 'package:flutter_application_1/model/setting/range_setting.dart';
-import 'package:flutter_application_1/model/setting/timer_setting.dart';
-import 'package:flutter_application_1/model/watering.dart';
+import 'package:flutter_application_1/model/app/content/item.dart';
+import 'package:flutter_application_1/model/app/content/light.dart';
+import 'package:flutter_application_1/model/app/content/mist_spray.dart';
+import 'package:flutter_application_1/model/app/content/roof.dart';
+import 'package:flutter_application_1/model/app/setting/level_setting.dart';
+import 'package:flutter_application_1/model/app/setting/range_setting.dart';
+import 'package:flutter_application_1/model/app/setting/timer_setting.dart';
+import 'package:flutter_application_1/model/app/content/watering.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class Home extends StatefulWidget {
@@ -19,20 +26,89 @@ class Home extends StatefulWidget {
   _HomeState createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
-  List<Item> data = Data().getData();
+ 
 
+class _HomeState extends State<Home> {
+
+  late List<Item> data;
+
+  late Object _sensorValue;
+  late DatabaseReference _sensorRef;
+  late StreamSubscription<DatabaseEvent> _sensorSubscription;
+  bool initialized = false;
+  FirebaseException? _error;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    init();
+    super.initState();
+    if (kDebugMode) {
+      print("init state !!");
+    }
+  }
+
+  Future<void> init() async {
+    _sensorRef  = FirebaseDatabase.instance.ref();
+    data = await Data().getData();
+
+    setState(() {
+      initialized = true;
+      
+    });
+
+    _sensorSubscription = _sensorRef.onValue.listen(
+      (DatabaseEvent event) {
+        setState(() {
+          _error = null;
+
+          final value = event.snapshot.value;
+
+          if (value != null) {
+            // Map<dynamic, dynamic> dataConvert = value as Map<dynamic, dynamic>;
+            // Sensor sensor = Sensor.fromMap(dataConvert['sensor']); 
+            // (data[0] as Watering).sensorValue = sensor.do_am_dat;
+          }
+        });
+      },
+
+      onError: (Object o) {
+        final error = o as FirebaseException;
+        setState(() {
+          _error = error;
+        });
+      },
+    );
+   
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _sensorSubscription.cancel();
+    if (kDebugMode) {
+      print("dispose !!");
+    }
+  }
+
+  
 
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text("Home"),
         centerTitle: true,
       ),
-      body: ListView(
+      body: !initialized ? Center(
+        child: Text("Đang tải dữ liệu ..."),
+      ) :
+
+      ListView(
         children: [
           Container(
             decoration: BoxDecoration(
@@ -43,6 +119,7 @@ class _HomeState extends State<Home> {
             ),
             child: Column(
               children: [
+                
                 const SizedBox(height: 30),
                 ListTile(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 30),
@@ -150,7 +227,7 @@ class _HomeState extends State<Home> {
               ),
             ),
           ),
-          const SizedBox(height: 10)
+          const SizedBox(height: 10),
         ],
       ),
     );

@@ -1,11 +1,15 @@
+import 'dart:async';
+
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/circularContainer.dart';
-import 'package:flutter_application_1/model/item.dart';
-import 'package:flutter_application_1/model/light.dart';
-import 'package:flutter_application_1/model/mist_spray.dart';
-import 'package:flutter_application_1/model/roof.dart';
-import 'package:flutter_application_1/model/watering.dart';
+import 'package:flutter_application_1/model/app/content/item.dart';
+import 'package:flutter_application_1/model/app/content/light.dart';
+import 'package:flutter_application_1/model/app/content/mist_spray.dart';
+import 'package:flutter_application_1/model/app/content/roof.dart';
+import 'package:flutter_application_1/model/app/content/watering.dart';
 import 'package:flutter_application_1/level_setting.dart';
 import 'package:flutter_application_1/timer_setting.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -25,6 +29,66 @@ class _ItemDashboardDetailState extends State<ItemDashboardDetail> {
   int currentIndexPageCarouselSlider = 0; // tiêu đề cảm biến
   late List<Widget> contents; // thông số
   late List<Widget> itemSettings; // cài đặt
+  late DatabaseReference _sensorRef;
+  late StreamSubscription<DatabaseEvent> _sensorSubscription;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    init();
+    print("init state con !!");
+
+  }
+
+  Future<void> init() async {
+    _sensorRef  = FirebaseDatabase.instance.ref();
+
+    // setState(() {
+    //   initialized = true;
+    // });
+
+    _sensorSubscription = _sensorRef.onValue.listen(
+      (DatabaseEvent event) {
+        setState(() {
+          // _error = null;
+
+          final value = event.snapshot.value;
+
+          if (value != null) {
+            // Map<dynamic, dynamic> dataConvert = value as Map<dynamic, dynamic>;
+            final sensor = (value as dynamic)['sensor']; 
+
+            if (widget.item is Watering) {
+              (widget.item as Watering).sensorValue = sensor['do_am_dat'];
+            } 
+
+            if (widget.item is MistSpray) {
+              (widget.item as MistSpray).tempValue = sensor['nhiet_do'];
+              (widget.item as MistSpray).humidValue = sensor['do_am_moi_truong'];
+            }
+          }
+        });
+      },
+
+      // onError: (Object o) {
+      //   final error = o as FirebaseException;
+      //   setState(() {
+      //     _error = error;
+      //   });
+      // },
+    );
+   
+  }
+
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _sensorSubscription.cancel();
+    print("con bị hủy !");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +104,6 @@ class _ItemDashboardDetailState extends State<ItemDashboardDetail> {
         ),
         Container(
           child: CircularPercentIndicator(
-            animation: true,
-            animationDuration: 1000,
             startAngle: 180,
             radius: 80,
             lineWidth: 20,
@@ -121,8 +183,6 @@ class _ItemDashboardDetailState extends State<ItemDashboardDetail> {
                 ),
                 Container(
                   child: CircularPercentIndicator(
-                    animation: true,
-                    animationDuration: 1000,
                     startAngle: 180,
                     radius: 60,
                     lineWidth: 16,
@@ -146,8 +206,6 @@ class _ItemDashboardDetailState extends State<ItemDashboardDetail> {
                 ),
                 Container(
                   child: CircularPercentIndicator(
-                    animation: true,
-                    animationDuration: 1000,
                     startAngle: 180,
                     radius: 60,
                     lineWidth: 16,

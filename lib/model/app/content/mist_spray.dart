@@ -1,7 +1,7 @@
-import 'package:flutter_application_1/model/item.dart';
-import 'package:flutter_application_1/model/setting/level_setting.dart';
-import 'package:flutter_application_1/model/setting/range_setting.dart';
-import 'package:flutter_application_1/model/setting/timer_setting.dart';
+import 'package:flutter_application_1/model/app/content/item.dart';
+import 'package:flutter_application_1/model/app/setting/level_setting.dart';
+import 'package:flutter_application_1/model/app/setting/range_setting.dart';
+import 'package:flutter_application_1/model/app/setting/timer_setting.dart';
 
 class MistSpray extends Item {
   String tempTitle = "Nhiệt độ môi trường";
@@ -16,7 +16,6 @@ class MistSpray extends Item {
   MistSpray(
       {required super.iconPath,
       required super.title,
-      required super.subtitle,
       required super.isOnDevice,
       required super.isAuto,
       required this.humidValue,

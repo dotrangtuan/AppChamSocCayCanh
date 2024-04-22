@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_application_1/itemDashboardDetail.dart';
-import 'package:flutter_application_1/model/item.dart';
+import 'package:flutter_application_1/model/app/content/item.dart';
 
 
 class ItemDashboard extends StatefulWidget {
@@ -64,7 +64,7 @@ class _ItemDashboardState extends State<ItemDashboard> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  widget.item.subtitle,
+                  widget.item.isOnDevice ? "Đang bật" : "Đang tắt",
                   style: Theme.of(context).textTheme.labelMedium,
                 ),
                 Switch(

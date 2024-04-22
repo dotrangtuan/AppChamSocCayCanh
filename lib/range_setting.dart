@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/model/setting/range_setting.dart';
+import 'package:flutter_application_1/model/app/setting/range_setting.dart';
 
-import 'model/item.dart';
+import 'model/app/content/item.dart';
 
 class RangeSettingContainer extends StatefulWidget {
   RangeSetting rangeSetting;

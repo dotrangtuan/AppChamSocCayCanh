@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/model/setting/timer_setting.dart';
+import 'package:flutter_application_1/model/app/setting/timer_setting.dart';
 
 class TimerSettingContainer extends StatefulWidget {
   TimerSetting timerSetting;

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/model/setting/level_setting.dart';
+import 'package:flutter_application_1/model/app/setting/level_setting.dart';
 
 class LevelSettingContainer extends StatefulWidget {
   LevelSetting levelSetting;
